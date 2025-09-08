@@ -69,6 +69,7 @@ import studentplatform.student_platform.service.SpinWheelService;
 import studentplatform.student_platform.service.SpinWheelItemService;
 import studentplatform.student_platform.service.SpinWheelHistoryService;
 import studentplatform.student_platform.repository.SpinWheelHistoryRepository;
+import studentplatform.student_platform.repository.EventParticipationRepository;
 
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -98,6 +99,7 @@ public class WebController {
     private final SpinWheelService spinWheelService;
     private final SpinWheelItemService spinWheelItemService;
     private final SpinWheelHistoryService spinWheelHistoryService;
+    private final EventParticipationRepository eventParticipationRepository;
     private final SpinWheelHistoryRepository spinWheelHistoryRepository;
     
     @Autowired
@@ -110,7 +112,8 @@ public class WebController {
                          SemesterService semesterService,
                          SemesterGradeService semesterGradeService,
                          SpinWheelService spinWheelService, SpinWheelItemService spinWheelItemService,
-                         SpinWheelHistoryService spinWheelHistoryService, SpinWheelHistoryRepository spinWheelHistoryRepository) {
+                         SpinWheelHistoryService spinWheelHistoryService, SpinWheelHistoryRepository spinWheelHistoryRepository,
+                         EventParticipationRepository eventParticipationRepository) {
 
         this.studentService = studentService;
         this.staffService = staffService;
@@ -130,6 +133,7 @@ public class WebController {
         this.spinWheelItemService = spinWheelItemService;
         this.spinWheelHistoryService = spinWheelHistoryService;
         this.spinWheelHistoryRepository = spinWheelHistoryRepository;
+        this.eventParticipationRepository = eventParticipationRepository;
     }
     
     // Update the home method
@@ -1237,7 +1241,7 @@ public class WebController {
                 int activeMembershipCount = clubService.getActiveMembershipsByStudent(student).size();
                 if (activeMembershipCount >= 2) {
                     System.out.println("Student reached max club limit (2), blocking join");
-                    redirectAttributes.addFlashAttribute("error", "You can join at most 2 clubs.");
+                    redirectAttributes.addFlashAttribute("error", "You can only participate in one activity at a time. Please wait until your current activity ends.");
                     return "redirect:/students/clubs";
                 }
                 
@@ -1580,10 +1584,28 @@ public class WebController {
             return "redirect:/login";
         }
 
-        eventService.getEventById(id).ifPresent(event -> {
-            EventParticipation participation = eventService.registerForEvent(student, event);
-        });
-        redirectAttributes.addFlashAttribute("joinedEventId", id);
+        try {
+            Optional<Event> eventOpt = eventService.getEventById(id);
+            if (eventOpt.isPresent()) {
+                Event event = eventOpt.get();
+                
+                // Check if student has any active event participation (either PENDING or APPROVED)
+                if (eventParticipationRepository.hasActiveEventParticipation(student.getId(), EventParticipation.ParticipationStatus.APPROVED) ||
+                    eventParticipationRepository.hasActiveEventParticipation(student.getId(), EventParticipation.ParticipationStatus.PENDING)) {
+                    redirectAttributes.addFlashAttribute("error", "You can only participate in one event at a time. Please wait until your current event ends.");
+                    return "redirect:/events";
+                }
+                
+                // Register for the event if no active participations
+                EventParticipation participation = eventService.registerForEvent(student, event);
+                redirectAttributes.addFlashAttribute("joinedEventId", id);
+                redirectAttributes.addFlashAttribute("success", "Successfully registered for event: " + event.getName());
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Event not found!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error registering for event: " + e.getMessage());
+        }
         return "redirect:/events";
     }
     

@@ -39,10 +39,21 @@
 
 <!-- Student Activities View -->
 <div class="container py-4">
-     <div class="alert alert-warning mt-2">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Important:</strong> You can only join one activity at a time. You can join another activity only after your current activity ends. 
-                    </div>
+    
+    <!-- Flash Messages -->
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>${error}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
+    <c:if test="${not empty success}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>${success}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </c:if>
+     
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">

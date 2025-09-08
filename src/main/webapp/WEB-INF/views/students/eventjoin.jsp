@@ -2,6 +2,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<c:if test="${not empty error}">
+    <div class="alert alert-danger" role="alert">
+        ${error}
+    </div>
+</c:if>
+<c:if test="${not empty success}">
+    <div class="alert alert-success" role="alert">
+        ${success}
+    </div>
+</c:if>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
     .event-card {

@@ -117,6 +117,7 @@
                                     <button type="button" class="btn btn-secondary btn-sm fancy-btn" disabled>
                                         <i class="bi bi-lock me-1"></i>Join Limit Reached
                                     </button>
+                                   
                                 </c:when>
                                 <c:otherwise>
                                     <form action="/students/clubs/join/${club.id}" method="post" style="display:inline;">

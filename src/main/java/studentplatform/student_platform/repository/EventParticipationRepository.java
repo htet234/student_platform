@@ -36,6 +36,9 @@ public interface EventParticipationRepository extends JpaRepository<EventPartici
 
     @Query("SELECT ep FROM EventParticipation ep WHERE ep.pointsAwarded = false AND (ep.event.endTime < :now OR ep.event.endTime = :now)")
     List<EventParticipation> findByPointsAwardedFalseAndEventEndTimeBeforeOrEventEndTimeEquals(@Param("now") java.time.LocalDateTime now);
+    
+    @Query("SELECT COUNT(ep) > 0 FROM EventParticipation ep WHERE ep.student.id = :studentId AND ep.status = :status AND ep.event.endTime > CURRENT_TIMESTAMP")
+    boolean hasActiveEventParticipation(@Param("studentId") Long studentId, @Param("status") ParticipationStatus status);
 }
 
 

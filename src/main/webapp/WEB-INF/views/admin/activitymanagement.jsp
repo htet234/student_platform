@@ -55,19 +55,6 @@
                     </a>
                 </div>
 
-                <!-- Filter Section -->
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <label for="clubFilter" class="form-label">Filter by Club</label>
-                        <select class="form-select" id="clubFilter">
-                            <option value="">All Clubs</option>
-                            <option value="Computer Science Club">Computer Science Club</option>
-                            <option value="Debate Society">Debate Society</option>
-                            <option value="Art Club">Art Club</option>
-                            <option value="Sports Club">Sports Club</option>
-                        </select>
-                    </div>
-                </div>
 
                 <!-- Activities Table -->
                 <div class="card">
