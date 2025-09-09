@@ -45,7 +45,7 @@
                                 <th>Attendance %</th>
                                 <th>Points Awarded</th>
                                 <th>Created By</th>
-                                <th>Created At</th>
+                                
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -68,7 +68,7 @@
                                         </c:choose>
                                     </td>
                                     <td>${attendance.createdBy.firstName} ${attendance.createdBy.lastName}</td>
-                                    <td><fmt:formatDate value="${createdAt_attendance.id}" pattern="yyyy-MM-dd HH:mm" /></td>
+                                    
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="/admin/attendances/edit/${attendance.id}" class="btn btn-sm btn-warning">
